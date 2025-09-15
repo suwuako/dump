@@ -19,6 +19,5 @@ typedef struct args {
 
 
 Args parse_headers(int argc, char *argv[]);
-bool file_exists(char *path);
 
 #endif
