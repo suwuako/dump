@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 
+#include "../headers/parse_args.h"
 #include "../headers/misc.h"
 
 void fatal_error(char *error_message) {
@@ -26,4 +27,14 @@ bool file_exists(char *path) {
     } else {
         return false;
     }
+}
+
+void print_args(Args args) {
+    printf("arg flags:\n");
+    printf("- dump header: %d\n", args.dump_header);
+
+    printf("- file:\n");
+    printf("\t- filename: %s\n", args.path.filepath);
+    printf("\t- set: %d\n", args.path.set);
+    printf("\t- len: %d\n", args.path.size);
 }
