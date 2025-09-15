@@ -28,8 +28,11 @@ void check_and_set_magic(FILE *fd, Elf_header *header) {
     header->magic[3] = getc(fd);
 }
 
-void dump_header(Args args, Elf_header header) {
-    printf("");
+void dump_header(Elf_header header) {
+    printf("\n== elf header dump ==\n");
+    printf("MAGIC: 0x%x, %s\n", header.magic[0], &header.magic[1]);
+    printf("format: %d bits\n", (header.class == 1) ? 32 : 64);
+    printf("byte order: %s endian\n", (header.byteorder == 1) ? "little" : "big");
 }
 
 Elf_header grab_elf_header(Args args) {
