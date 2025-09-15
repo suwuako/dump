@@ -29,6 +29,7 @@ void check_and_set_magic(FILE *fd, Elf_header *header) {
 }
 
 void dump_header(Args args, Elf_header header) {
+    printf("");
 }
 
 Elf_header grab_elf_header(Args args) {

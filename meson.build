@@ -1,6 +1,6 @@
 project('dump', 'c')
 
-deps = ['src/misc.c', 'src/parse_args.c']
+deps = ['src/misc.c', 'src/parse_args.c', 'src/dump_header.c']
 
 executable('dump', 'src/main.c', deps)
 

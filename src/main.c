@@ -10,7 +10,8 @@ int main(int argc, char *argv[]) {
 
     print_args(args);
 
-    if (args.dump_header) { dump_header(args); }
+    Elf_header elf_header = grab_elf_header(args);
+    if (args.dump_header) { dump_header(args, elf_header); }
 
     return 0;
 }
