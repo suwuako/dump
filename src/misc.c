@@ -7,6 +7,7 @@
 
 void fatal_error(char *error_message) {
     fprintf(stderr, error_message);
+    fprintf(stderr, "\n");
     exit(1);
 }
 

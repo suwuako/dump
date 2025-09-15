@@ -9,6 +9,7 @@
 typedef struct filepath {
     char *filepath;
     int size;
+    bool set;             // is set when valid filepath is set
 } Filepath;
 
 
@@ -18,6 +19,6 @@ typedef struct args {
 } Args;
 
 
-Args parse_headers(int argc, char *argv[]);
+Args parse_args(int argc, char *argv[]);
 
 #endif
