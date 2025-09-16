@@ -48,17 +48,17 @@ uint64_t read_nbytes(FILE *fd, Elf_header *header, int byte_count, bool variable
     // little endian
     if (header->byteorder == 1) {
         ret |= getc(fd);
-        ret |= ((uint64_t)getc(fd) << (8));
+        ret |= ((uint64_t) getc(fd) << (8));
         if (byte_count == 2) { goto READ_NBYTES__END; }
         
-        ret |= ((uint64_t)getc(fd) << (8 * 2));
-        ret |= ((uint64_t)getc(fd) << (8 * 3));
+        ret |= ((uint64_t) getc(fd) << (8 * 2));
+        ret |= ((uint64_t) getc(fd) << (8 * 3));
         if (byte_count == 4) { goto READ_NBYTES__END; }
         
         ret |= ((uint64_t) getc(fd) << (8 * 4));
-        ret |= ((uint64_t)getc(fd) << (8 * 5));
-        ret |= ((uint64_t)getc(fd) << (8 * 6));
-        ret |= ((uint64_t)getc(fd) << (8 * 7));
+        ret |= ((uint64_t) getc(fd) << (8 * 5));
+        ret |= ((uint64_t) getc(fd) << (8 * 6));
+        ret |= ((uint64_t) getc(fd) << (8 * 7));
         if (byte_count == 8) { goto READ_NBYTES__END; }
     } else if (header->byteorder == 2) {
         ret |= getc(fd);
@@ -99,9 +99,9 @@ void dump_header(Elf_header header) {
     printf("osabi:      \t%s\n", osabi_names[header.abi]);
     printf("abiversion+:\t%d\n", header.abiversion);
     printf("type:       \t%s\n", (header.type <= 0x04) ? object_type_names[header.type] : "Reserved Other");
-    printf("target ISA: \t%s, %ld\n", (header.isa) == 0x03 ? "x86" : "Not x86 lol", header.isa);
+    printf("target ISA: \t%s, %ld\n", (header.isa) == 0x3e ? "AMD x86-64" : "not amd x86", header.isa);
     printf("eversion:   \t%ld\n", header.eversion);
-    printf("prog entry: \t0x%ld\n", header.entry);
+    printf("prog entry: \t0x%lx\n", header.entry);
 }
 
 Elf_header grab_elf_header(Args args) {
