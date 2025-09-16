@@ -22,7 +22,7 @@ Compile the project with meson.
 
 Test if the binary functions by dumping the contents of itself.
 
-`/dump/build/ $: ./dump -dh dump`
+`/dump/build/ $: ./dump -h dump`
 
 ## Usage
 ```
