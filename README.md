@@ -26,6 +26,11 @@ Test if the binary functions by dumping the contents of itself.
 
 ## Usage
 ```
-Usage: dump [OPTION]... [FILE]
+Usage: dump [OPTION]... FILE
+Dumps compiled binaries headers, symbols, etc.
+
     -h, --dump-header           dump ELF headers
+
+Examples:
+    dump -h a.out       dumps the ELF headers from a.out
 ```
