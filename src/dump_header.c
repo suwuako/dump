@@ -34,6 +34,7 @@ uint64_t read_varaible_entries(FILE *fd, Elf_header header) {
 */
 
 // IM SO UGLY 😭 sigh... 💔
+// is goto aura?
 uint64_t read_nbytes(FILE *fd, Elf_header *header, int byte_count, bool variable) {
     uint64_t ret = 0;
 
@@ -92,16 +93,25 @@ void check_and_set_magic(FILE *fd, Elf_header *header) {
 
 void dump_header(Elf_header header) {
     printf("\n== elf header dump ==\n");
-    printf("MAGIC:      \t%x, %s\n", header.magic[0], &header.magic[1]);
-    printf("format:     \t%d bits\n", (header.class == 1) ? 32 : 64);
-    printf("byte order: \t%s endian\n", (header.byteorder == 1) ? "little" : "big");
-    printf("ei_ver:     \t%d (should be 1)\n", header.hversion);
-    printf("osabi:      \t%s\n", osabi_names[header.abi]);
-    printf("abiversion+:\t%d\n", header.abiversion);
-    printf("type:       \t%s\n", (header.type <= 0x04) ? object_type_names[header.type] : "Reserved Other");
-    printf("target ISA: \t%s, %ld\n", (header.isa) == 0x3e ? "AMD x86-64" : "not amd x86", header.isa);
-    printf("eversion:   \t%ld\n", header.eversion);
-    printf("prog entry: \t0x%lx\n", header.entry);
+    printf("\tMAGIC:                            \t%x, %s\n", header.magic[0], &header.magic[1]);
+    printf("\tformat:                           \t%d bits\n", (header.class == 1) ? 32 : 64);
+    printf("\tbyte order:                       \t%s endian\n", (header.byteorder == 1) ? "little" : "big");
+    printf("\tei_ver:                           \t%d (should be 1)\n", header.hversion);
+    printf("\tosabi:                            \t%s\n", osabi_names[header.abi]);
+    printf("\tabiversion+:                      \t%d\n", header.abiversion);
+    printf("\ttype:                             \t%s\n", (header.type <= 0x04) ? object_type_names[header.type] : "Reserved Other");
+    printf("\ttarget ISA:                       \t%s, %ld\n", (header.isa) == 0x3e ? "AMD x86-64" : "not amd x86", header.isa);
+    printf("\teversion:                         \t0x%lx\n", header.eversion);
+    printf("\tprog entry address:               \t0x%lx\n", header.entry);
+    printf("\tprog header address:              \t%ld (bytes into file)\n", header.pheader);
+    printf("\tsection header offset:            \t%ld (bytes into file)\n", header.sheader);
+    printf("\tflags:                            \t0x%ld\n", header.flags);
+    printf("\theader size:                      \t%ld (bytes)\n", header.hsize);
+    printf("\tprogram header entry size:        \t%ld (bytes)\n", header.phentsize);
+    printf("\tprogram header entry num:         \t%ld\n", header.phnum);
+    printf("\tsection header entry size:        \t%ld (bytes)\n", header.shentsize);
+    printf("\tsection header entry num:         \t%ld\n", header.shnum);
+    printf("\tsection header string table index:\t%ld\n", header.shent);
 }
 
 Elf_header grab_elf_header(Args args) {

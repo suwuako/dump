@@ -5,7 +5,7 @@
 #include "../headers/dump_header.h"
 
 int main(int argc, char *argv[]) {
-    printf("hello, dump\n\n");
+    printf("== hello, dump == \n\n");
     Args args = parse_args(argc, argv);
 
     print_args(args);

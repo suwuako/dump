@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 
-#define DUMP_HEADER_ARG "-dh"
+#define DUMP_HEADER_ARG "-h"
 
 typedef struct filepath {
     char *filepath;
