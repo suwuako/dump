@@ -6,7 +6,10 @@
 #include <stdbool.h>
 
 #include "parse_args.h"
+#define PADDING_SIZE 7
 
+extern const char *osabi_names[19];
+extern const char *object_type_names[5];
 
 typedef struct elf_header {
     char magic[4];                // elf magic numbers, 0x7f, 'elf'
@@ -15,9 +18,10 @@ typedef struct elf_header {
     uint8_t hversion;             // set to 1 for original/current elf version
     uint8_t abi;                  // finds target ABI (0x03 for linux)
     uint8_t abiversion;           // additional abi version
-    uint16_t type;                // object file type
-    uint16_t isa;                 // target isa
-    uint32_t eversion;            // set to 1 for elf version
+    uint8_t padding[PADDING_SIZE];           // padding bytes
+    uint64_t type;                // object file type
+    uint64_t isa;                 // target isa
+    uint64_t eversion;            // set to 1 for elf version
 
                                   // these fields are:
                                   // 32 bit if class == 1
@@ -26,15 +30,15 @@ typedef struct elf_header {
     uint64_t pheader;             // entry point of program header tabl. 
     uint64_t sheader;             // entry point of section header table
 
-    uint32_t flags;               // target architecture changes interpretation of ts
-    uint16_t hsize;               // size of elf header (64/52 bytes if 64/32 bits)
-    uint16_t phentsize;           // size of program header table entry (0x20 if 32 bit,
+    uint64_t flags;               // target architecture changes interpretation of ts
+    uint64_t hsize;               // size of elf header (64/52 bytes if 64/32 bits)
+    uint64_t phentsize;           // size of program header table entry (0x20 if 32 bit,
                                   // 0x38 if 64 bit)
-    uint16_t phnum;               // number of entries in program header table
-    uint16_t shentsize;           // size of a section header table entry
+    uint64_t phnum;               // number of entries in program header table
+    uint64_t shentsize;           // size of a section header table entry
                                   // (0x28 if 32 bit, 0x40 if 64 bit)
-    uint16_t shnum;               // number of entries in section header table
-    uint16_t shent;               // index of section header table entry that contains
+    uint64_t shnum;               // number of entries in section header table
+    uint64_t shent;               // index of section header table entry that contains
                                   // the section names
 
 } Elf_header;
@@ -44,5 +48,6 @@ void dump_header(Elf_header header);
 Elf_header grab_elf_header(Args args);
 void check_and_set_magic(FILE *fd, Elf_header *header);
 uint64_t read_varaible_entries(FILE *fd, Elf_header header);
+uint64_t read_nbytes(FILE *fd, Elf_header *header, int byte_count, bool variable);
 
 #endif

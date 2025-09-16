@@ -5,6 +5,17 @@
 #include "../headers/parse_args.h"
 #include "../headers/dump_header.h"
 
+const char *osabi_names[19] = {
+  "SystemV", "HP_UX", "NetBSD", "Linux", "GNU_Hurd", "Solaris", "AIX",
+  "IRIX", "FreeBSD", "Tru64", "Novell_Modesto", "OpenBSD", "OpenVMS",
+  "NonStop_Kernel", "AROS", "FenixOS", "Nuxi_CloudABI", "Stratus_Technologies_OpenVOS"
+};
+
+const char *object_type_names[5] = {
+    "Unknown", "Relocatable", "Executable", "Shared Object", "Core"
+};
+
+/*
 // reads 32/64 bits depending of class in elf_header
 uint64_t read_varaible_entries(FILE *fd, Elf_header header) {
     uint64_t ret = 0;
@@ -20,6 +31,57 @@ uint64_t read_varaible_entries(FILE *fd, Elf_header header) {
 
     return ret;
 }
+*/
+
+// IM SO UGLY 😭 sigh... 💔
+uint64_t read_nbytes(FILE *fd, Elf_header *header, int byte_count, bool variable) {
+    uint64_t ret = 0;
+
+    if (variable) {
+        if (header->class == 1) {
+            byte_count = 4;
+        } else {
+            byte_count = 8;
+        }
+    }
+
+    // little endian
+    if (header->byteorder == 1) {
+        ret |= getc(fd);
+        ret |= ((uint64_t)getc(fd) << (8));
+        if (byte_count == 2) { goto READ_NBYTES__END; }
+        
+        ret |= ((uint64_t)getc(fd) << (8 * 2));
+        ret |= ((uint64_t)getc(fd) << (8 * 3));
+        if (byte_count == 4) { goto READ_NBYTES__END; }
+        
+        ret |= ((uint64_t) getc(fd) << (8 * 4));
+        ret |= ((uint64_t)getc(fd) << (8 * 5));
+        ret |= ((uint64_t)getc(fd) << (8 * 6));
+        ret |= ((uint64_t)getc(fd) << (8 * 7));
+        if (byte_count == 8) { goto READ_NBYTES__END; }
+    } else if (header->byteorder == 2) {
+        ret |= getc(fd);
+        ret <<= 8; ret |= getc(fd);
+        if (byte_count == 4) { goto READ_NBYTES__END; }
+
+        ret <<= 8; ret |= getc(fd);
+        ret <<= 8; ret |= getc(fd);
+        if (byte_count == 4) { goto READ_NBYTES__END; }
+
+        ret <<= 8; ret |= getc(fd);
+        ret <<= 8; ret |= getc(fd);
+        ret <<= 8; ret |= getc(fd);
+        ret <<= 8; ret |= getc(fd);
+        if (byte_count == 8) { goto READ_NBYTES__END; }
+    } else {
+        fatal_error("ERROR: expected endianess to be 1 or 2.");
+    }
+
+READ_NBYTES__END:
+    return ret;
+}
+
 
 void check_and_set_magic(FILE *fd, Elf_header *header) {
     header->magic[0] = getc(fd);
@@ -30,9 +92,16 @@ void check_and_set_magic(FILE *fd, Elf_header *header) {
 
 void dump_header(Elf_header header) {
     printf("\n== elf header dump ==\n");
-    printf("MAGIC: 0x%x, %s\n", header.magic[0], &header.magic[1]);
-    printf("format: %d bits\n", (header.class == 1) ? 32 : 64);
-    printf("byte order: %s endian\n", (header.byteorder == 1) ? "little" : "big");
+    printf("MAGIC:      \t%x, %s\n", header.magic[0], &header.magic[1]);
+    printf("format:     \t%d bits\n", (header.class == 1) ? 32 : 64);
+    printf("byte order: \t%s endian\n", (header.byteorder == 1) ? "little" : "big");
+    printf("ei_ver:     \t%d (should be 1)\n", header.hversion);
+    printf("osabi:      \t%s\n", osabi_names[header.abi]);
+    printf("abiversion+:\t%d\n", header.abiversion);
+    printf("type:       \t%s\n", (header.type <= 0x04) ? object_type_names[header.type] : "Reserved Other");
+    printf("target ISA: \t%s, %ld\n", (header.isa) == 0x03 ? "x86" : "Not x86 lol", header.isa);
+    printf("eversion:   \t%ld\n", header.eversion);
+    printf("prog entry: \t0x%ld\n", header.entry);
 }
 
 Elf_header grab_elf_header(Args args) {
@@ -44,19 +113,22 @@ Elf_header grab_elf_header(Args args) {
     ret.hversion = getc(fd);
     ret.abi = getc(fd);
     ret.abiversion = getc(fd);
-    ret.type = getc(fd);
-    ret.isa = getc(fd);
-    ret.eversion = getc(fd);
-    ret.entry = read_varaible_entries(fd, ret);
-    ret.pheader = read_varaible_entries(fd, ret);
-    ret.sheader = read_varaible_entries(fd, ret);
-    ret.flags = getc(fd);
-    ret.hsize = getc(fd);
-    ret.phentsize = getc(fd);
-    ret.phnum = getc(fd);
-    ret.shentsize = getc(fd);
-    ret.shnum = getc(fd);
-    ret.shent = getc(fd);
+    for (int i = 0; i < PADDING_SIZE; i++) {
+        ret.padding[i] = getc(fd);
+    }
+    ret.type = read_nbytes(fd, &ret, 2, false);
+    ret.isa = read_nbytes(fd, &ret, 2, false);
+    ret.eversion = read_nbytes(fd, &ret, 4, false);
+    ret.entry = read_nbytes(fd, &ret, 0, true);
+    ret.pheader = read_nbytes(fd, &ret, 0, true);
+    ret.sheader = read_nbytes(fd, &ret, 0, true);
+    ret.flags = read_nbytes(fd, &ret, 4, false);
+    ret.hsize = read_nbytes(fd, &ret, 2, false);
+    ret.phentsize = read_nbytes(fd, &ret, 2, false);
+    ret.phnum = read_nbytes(fd, &ret, 2, false);
+    ret.shentsize = read_nbytes(fd, &ret, 2, false);
+    ret.shnum = read_nbytes(fd, &ret, 2, false);
+    ret.shent = read_nbytes(fd, &ret, 2, false);
 
     return ret;
 }
