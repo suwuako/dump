@@ -23,7 +23,7 @@ Args parse_args(int argc, char *argv[]) {
         } else {
             char message_buffer[1000];
 
-            snprintf(message_buffer, sizeof(message_buffer), "ERROR: filepath %s doesn't exist!", cur_arg);
+            snprintf(message_buffer, sizeof(message_buffer), "ERROR: filepath '%s' doesn't exist!", cur_arg);
             // assume is the filepath if not a flag
             if (!file_exists(cur_arg)) { fatal_error(message_buffer); }
             if (!file_readable(cur_arg)) { fatal_error("ERROR: unable to read file!"); }
