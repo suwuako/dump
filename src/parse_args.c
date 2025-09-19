@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -17,11 +18,14 @@ Args parse_args(int argc, char *argv[]) {
     for (int i = 1; i < argc; i++) {
         char *cur_arg = argv[i];
 
-        if (strcmp(cur_arg, DUMP_HEADER_ARG) == 0) {
+        if (strcmp(cur_arg, DUMP_HEADER_ARG) == 0 || strcmp(cur_arg, DUMP_HEADER_ARG_LONG) == 0) {
             ret.dump_header = true;
         } else {
+            char message_buffer[1000];
+
+            snprintf(message_buffer, sizeof(message_buffer), "ERROR: filepath %s doesn't exist!", cur_arg);
             // assume is the filepath if not a flag
-            if (!file_exists(cur_arg)) { fatal_error("ERROR: filepath doesn't exist!"); }
+            if (!file_exists(cur_arg)) { fatal_error(message_buffer); }
             if (!file_readable(cur_arg)) { fatal_error("ERROR: unable to read file!"); }
 
             int len = strlen(cur_arg);
