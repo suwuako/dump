@@ -5,6 +5,7 @@
 
 
 #define DUMP_HEADER_ARG "-h"
+#define DUMP_HEADER_ARG_LONG "--dump-header"
 
 typedef struct filepath {
     char *filepath;
