@@ -10,14 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "starting ci..."
-      - name: use meson
+      name: use meson
       - run: sudo apt-get install python3 ninja-build meson
 
-      - name: setup & build with meson
+      name: setup & build with meson
       - run: meson setup build
       - run: meson compile -C build
 
-      - name: run tests
+      name: run tests
       - run: echo "we dont have tests lmfao"
 
 
