@@ -6,7 +6,7 @@ on: [push, pull_request]
 
 jobs:
   build-dump:
-    name: meson build
+    name: tests
     runs-on: ubuntu-latest
     steps:
       - name: install meson
