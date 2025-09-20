@@ -6,9 +6,9 @@ on: [push, pull_request]
 
 jobs:
   build-dump:
+    name: meson build
     runs-on: ubuntu-latest
     steps:
-    - name: meson build
       run: pwd
       run: ls | echo
 
