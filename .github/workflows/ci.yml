@@ -6,9 +6,10 @@ on: [push, pull_request]
 
 jobs:
   build-dump:
-    name: tests
+    name: meson test
     runs-on: ubuntu-latest
     steps:
+      - run: echo "starting ci..."
       - name: install meson
       - run: sudo apt-get install python3 ninja-build meson
 
