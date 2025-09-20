@@ -9,6 +9,14 @@ jobs:
     name: meson build
     runs-on: ubuntu-latest
     steps:
-      - run: sudo apt-get install meson
+      - name: install meson
+      - run: sudo apt-get install python3 ninja-build meson
+
+      - name: setup & build with meson
+      - run: meson setup build
+      - run: meson compile -C build
+
+      - name: run tests
+      - run: echo "we dont have tests lmfao"
 
 
