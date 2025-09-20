@@ -1,4 +1,4 @@
-name: meow
+name: dump-ci
 
 
 on: [push, pull_request] 
@@ -9,6 +9,6 @@ jobs:
     name: meson build
     runs-on: ubuntu-latest
     steps:
-      - run: echo "test"
+      run: sudo apt-get install meson
 
 
