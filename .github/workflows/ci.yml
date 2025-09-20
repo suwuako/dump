@@ -6,7 +6,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      name: Build with meson
       run: echo "test"
 
 
