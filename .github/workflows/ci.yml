@@ -9,6 +9,6 @@ jobs:
     name: meson build
     runs-on: ubuntu-latest
     steps:
-      run: sudo apt-get install meson
+      - run: sudo apt-get install meson
 
 
