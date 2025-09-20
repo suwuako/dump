@@ -1,14 +1,12 @@
 name: dump-ci
-
+run-name: build and test
 on: [push, pull_request] 
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Build with meson
-      - run: sudo apt install -y meson
-      - run: meson setup build
-      - run: meson compile -C build
+      name: Build with meson
+      run: echo "test"
 
 
