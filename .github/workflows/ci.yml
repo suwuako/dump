@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "starting ci..."
-      - name: install meson
+      - name: use meson
       - run: sudo apt-get install python3 ninja-build meson
 
       - name: setup & build with meson
