@@ -9,7 +9,7 @@ jobs:
     name: meson build
     runs-on: ubuntu-latest
     steps:
-      run: pwd
-      run: ls | echo
+    - run: pwd
+    - run: ls | echo
 
 
