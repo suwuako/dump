@@ -3,7 +3,7 @@ run-name: build and test
 on: [push, pull_request] 
 
 jobs:
-  build:
+  build-dump:
     runs-on: ubuntu-latest
     steps:
       run: echo "test"
