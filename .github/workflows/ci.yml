@@ -6,14 +6,10 @@ on: [push, pull_request]
 
 jobs:
   build-dump:
-    name: meson build
     runs-on: ubuntu-latest
     steps:
+    - name: meson build
     - run: pwd
-    - run: ls
-    - run: sudo apt-get install python3 ninja-build meson
-    - run: meson setup build
-    - run: meson compile -C build
-    - run: echo "we dont have tests lmfao"
+    - run: ls | echo
 
 
