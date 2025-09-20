@@ -1,11 +1,14 @@
-name: dump-ci
-run-name: build and test
+name: meow
+
+
 on: [push, pull_request] 
+
 
 jobs:
   build-dump:
+    name: meson build
     runs-on: ubuntu-latest
     steps:
-      run: echo "test"
+      - run: echo "test"
 
 
