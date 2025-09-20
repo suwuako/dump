@@ -20,6 +20,8 @@ Args parse_args(int argc, char *argv[]) {
 
         if (strcmp(cur_arg, DUMP_HEADER_ARG) == 0 || strcmp(cur_arg, DUMP_HEADER_ARG_LONG) == 0) {
             ret.dump_header = true;
+        } else if (strcmp(cur_arg, DUMP_SECTION_HEADER_ARG) == 0 || strcmp(cur_arg, DUMP_SECTION_HEADER_ARG_LONG) == 0) {
+            ret.dump_section_header = true;
         } else {
             char message_buffer[1000];
 
