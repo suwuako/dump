@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: pwd
+    - run: ls
     - run: sudo apt-get install python3 ninja-build meson
     - run: meson setup build
     - run: meson compile -C build
