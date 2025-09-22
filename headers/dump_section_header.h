@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 #include "../headers/misc.h"
-#include "../headers/dump_header.h"
+#include "../headers/dump_elf_header.h"
 
 
 typedef struct section_header {

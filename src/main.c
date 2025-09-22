@@ -3,7 +3,7 @@
 #include "../headers/dump_section_header.h"
 #include "../headers/parse_args.h"
 #include "../headers/misc.h"
-#include "../headers/dump_header.h"
+#include "../headers/dump_elf_header.h"
 
 int main(int argc, char *argv[]) {
     printf("== hello, dump == \n\n");
