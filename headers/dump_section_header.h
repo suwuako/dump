@@ -8,7 +8,7 @@
 
 
 typedef struct section_header {
-    char name[4];
+    uint64_t name;
     uint64_t type;
     uint64_t flags;
     uint64_t addr;
@@ -22,5 +22,6 @@ typedef struct section_header {
 
 void navigate_fd_to_section_header(Elf_header header, FILE *fd);
 Section_header grab_sect_header(Elf_header header, Args args);
+uint64_t read_nbytes_better(Elf_header header, FILE *fd, int bytes, bool variable);
 
 #endif
