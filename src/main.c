@@ -16,5 +16,7 @@ int main(int argc, char *argv[]) {
 
     Section_header sect_header = grab_sect_header(elf_header, args);
 
+    DEBUG_DUMP_NBYTES(0, 0, args);
+
     return 0;
 }
