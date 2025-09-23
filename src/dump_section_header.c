@@ -39,7 +39,12 @@ void DEBUG_DUMP_NBYTES(int offset, int n, Args args) {
 
     lseek(fileno(fd), offset, SEEK_SET);
     for (int i = 0 ; i < n; i++) {
-        printf("%d", fgetc(fd));
+        if (i % 16 == 0) {
+            printf("\n");
+        } if (i % 2 == 0) {
+            printf(" ");
+        }
+        printf("%02x", fgetc(fd));
     }
 }
 
