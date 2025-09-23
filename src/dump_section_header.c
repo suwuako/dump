@@ -11,11 +11,11 @@ uint64_t read_nbytes_better(Elf_header header, FILE *fd, int bytes, bool variabl
 
     }
 
-    if (header.class == LITTLE_ENDIAN) {
+    if (header.ei_class == LITTLE_ENDIAN) {
         for (int i = 0; i < bytes; i++) {
             ret |= (fgetc(fd) << (8 * i));
         }
-    } else if (header.class == BIG_ENDIAN) {
+    } else if (header.ei_class == BIG_ENDIAN) {
         for (int i = 0; i < bytes; i++) {
             ret |= fgetc(fd); ret >>= 8;
         }
@@ -25,10 +25,10 @@ uint64_t read_nbytes_better(Elf_header header, FILE *fd, int bytes, bool variabl
 }
 
 void navigate_fd_to_section_header(Elf_header header, FILE *fd) {
-    uint64_t entry_point = header.sheader;
-    uint64_t entry_count = header.shnum;
-    uint64_t entry_size = header.shentsize;
-    uint64_t shent_index = header.shent;
+    uint64_t entry_point = header.e_shoff;
+    uint64_t entry_count = header.e_shnum;
+    uint64_t entry_size = header.e_shentsize;
+    uint64_t shent_index = header.e_shstrndx;
 
     // confirm if shent_index <= entry_conunt;
     if (shent_index > entry_count - 1 ) fatal_error("ERROR: section header index is greater than entry no.");
