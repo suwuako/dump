@@ -3,7 +3,7 @@
 
 #include "../headers/misc.h"
 #include "../headers/parse_args.h"
-#include "../headers/dump_header.h"
+#include "../headers/dump_elf_header.h"
 
 const char *osabi_names[19] = {
   "SystemV", "HP_UX", "NetBSD", "Linux", "GNU_Hurd", "Solaris", "AIX",

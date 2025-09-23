@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "../headers/dump_header.h"
+#include "../headers/dump_elf_header.h"
 #include "../headers/dump_section_header.h"
 #include "../headers/misc.h"
 
