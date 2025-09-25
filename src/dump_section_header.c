@@ -68,6 +68,7 @@ Section_header grab_sect_header(Elf_header header, Args args, int index) {
     navigate_fd_to_section_index(header, fd, index);
 
     ret.sh_name = read_nbytes_better(header, fd, 4, false);
+    printf("%ld\n", ret.sh_name);
     ret.sh_type = read_nbytes_better(header, fd, 4, false);
     ret.sh_flags = read_nbytes_better(header, fd, 0, true);
     ret.sh_addr = read_nbytes_better(header, fd, 0, true);
@@ -88,14 +89,28 @@ Section_header *grab_all_section_headers(Elf_header header, Args args) {
         Section_header section = grab_sect_header(header, args, i);
         all_headers[i] = section;
     }
+
+    return all_headers;
 }
 
-void dump_section_headers(Section_header *headers, Elf_header elf_header) {
+void dump_section_headers(Section_header *headers, Elf_header elf_header, Args args) {
+    printf("\n== section header dump ==\n");
+    printf("elf header count: %ld; section header index: %ld\n", elf_header.e_shnum, elf_header.e_shstrndx);
     for (int i = 0; i < elf_header.e_shnum; i++) {
-        print_and_format_section_header(headers[elf_header.e_shstrndx], headers[i], elf_header, i);
+        print_and_format_section_header(headers[elf_header.e_shstrndx], headers[i], elf_header, i, args);
     }
 }
 
-void print_and_format_section_header(Section_header shname, Section_header h, Elf_header elf_header, int i) {
+void print_and_format_section_header(Section_header shname, Section_header h, Elf_header elf_header, int i, Args args) {
+    int addr = shname.sh_offset + h.sh_name;
+    FILE *fd = fopen(args.path.filepath, "r");
+    lseek(fileno(fd), addr, SEEK_SET);
+    char c;
+
+    printf("[%d] %ld %ld\n", i, shname.sh_offset, h.sh_name);
     // read string until null term
+    while ((c = fgetc(fd)) != '\0') {
+        printf("%c", c);
+    }
+    printf("\n");
 }
