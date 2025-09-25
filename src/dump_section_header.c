@@ -17,11 +17,11 @@ uint64_t read_nbytes_better(Elf_header header, FILE *fd, int bytes, bool variabl
         }
     }
 
-    if (header.ei_class == LITTLE_ENDIAN) {
+    if (header.ei_data == LITTLE_ENDIAN_CUSTOM) {
         for (int i = 0; i < bytes; i++) {
             ret |= (fgetc(fd) << (8 * i));
         }
-    } else if (header.ei_class == BIG_ENDIAN) {
+    } else if (header.ei_data == BIG_ENDIAN_CUSTOM) {
         for (int i = 0; i < bytes; i++) {
             ret |= fgetc(fd); ret >>= 8;
         }
@@ -47,18 +47,13 @@ void DEBUG_DUMP_NBYTES(int offset, int n, Args args) {
         }
         printf("%02x", fgetc(fd));
     }
+    fclose(fd);
 }
 
 void navigate_fd_to_section_header(Elf_header header, FILE *fd) {
     uint64_t entry_point = header.e_shoff;
-    uint64_t entry_count = header.e_shnum;
-    uint64_t entry_size = header.e_shentsize;
-    uint64_t shent_index = header.e_shstrndx;
 
-    // confirm if shent_index <= entry_conunt;
-    // if (shent_index > entry_count - 1 ) fatal_error("ERROR: section header index is greater than entry no.");
-
-    lseek(fileno(fd), entry_point + entry_size, SEEK_SET);
+    lseek(fileno(fd), entry_point, SEEK_SET);
 }
 
 Section_header grab_sect_header(Elf_header header, Args args, int index) {
@@ -68,7 +63,6 @@ Section_header grab_sect_header(Elf_header header, Args args, int index) {
     navigate_fd_to_section_index(header, fd, index);
 
     ret.sh_name = read_nbytes_better(header, fd, 4, false);
-    printf("%ld\n", ret.sh_name);
     ret.sh_type = read_nbytes_better(header, fd, 4, false);
     ret.sh_flags = read_nbytes_better(header, fd, 0, true);
     ret.sh_addr = read_nbytes_better(header, fd, 0, true);
@@ -78,6 +72,7 @@ Section_header grab_sect_header(Elf_header header, Args args, int index) {
     ret.sh_info = read_nbytes_better(header, fd, 4, false);
     ret.sh_addralign = read_nbytes_better(header, fd, 0, true);
     ret.sh_entsize = read_nbytes_better(header, fd, 0, true);
+    fclose(fd);
 
     return ret;
 }
@@ -94,23 +89,64 @@ Section_header *grab_all_section_headers(Elf_header header, Args args) {
 }
 
 void dump_section_headers(Section_header *headers, Elf_header elf_header, Args args) {
-    printf("\n== section header dump ==\n");
-    printf("elf header count: %ld; section header index: %ld\n", elf_header.e_shnum, elf_header.e_shstrndx);
+    printf("\n== section header dump ==\n\n");
+    printf("elf header count: %ld\nshstrntab index: %ld\n\n", elf_header.e_shnum, elf_header.e_shstrndx);
+
+    printf("%s"SH_NAME_ALIGN_STRING SH_TYPE_ALIGN_STRING"\n", "Index", "sh_name", "sh_type");
     for (int i = 0; i < elf_header.e_shnum; i++) {
         print_and_format_section_header(headers[elf_header.e_shstrndx], headers[i], elf_header, i, args);
     }
+}
+
+void print_sh_type_entry(uint64_t value) {
+    const char *result = NULL;
+    switch (value) {
+        case 0x0:        result = "SHT_NULL"; break;
+        case 0x1:        result = "SHT_PROGBITS"; break;
+        case 0x2:        result = "SHT_SYMTAB"; break;
+        case 0x3:        result = "SHT_STRTAB"; break;
+        case 0x4:        result = "SHT_RELA"; break;
+        case 0x5:        result = "SHT_HASH"; break;
+        case 0x6:        result = "SHT_DYNAMIC"; break;
+        case 0x7:        result = "SHT_NOTE"; break;
+        case 0x8:        result = "SHT_NOBITS"; break;
+        case 0x9:        result = "SHT_REL"; break;
+        case 0x0A:       result = "SHT_SHLIB"; break;
+        case 0x0B:       result = "SHT_DYNSYM"; break;
+        case 0x0E:       result = "SHT_INIT_ARRAY"; break;
+        case 0x0F:       result = "SHT_FINI_ARRAY"; break;
+        case 0x10:       result = "SHT_PREINIT_ARRAY"; break;
+        case 0x11:       result = "SHT_GROUP"; break;
+        case 0x12:       result = "SHT_SYMTAB_SHNDX"; break;
+        case 0x13:       result = "SHT_NUM"; break;
+        case 0x60000000: result = "SHT_LOOS"; break;
+        default:         result = "UNKNOWN"; break;
+    }
+
+    printf(SH_TYPE_ALIGN_STRING, result);
+}
+
+void read_stream_until_null(FILE *fd) {
+    char result[100];
+    int i = 0;
+
+    // read string until null term
+    while ((result[i] = fgetc(fd)) != '\0') i++;
+
+    printf(SH_NAME_ALIGN_STRING, result);
 }
 
 void print_and_format_section_header(Section_header shname, Section_header h, Elf_header elf_header, int i, Args args) {
     int addr = shname.sh_offset + h.sh_name;
     FILE *fd = fopen(args.path.filepath, "r");
     lseek(fileno(fd), addr, SEEK_SET);
-    char c;
 
-    printf("[%d] %ld %ld\n", i, shname.sh_offset, h.sh_name);
-    // read string until null term
-    while ((c = fgetc(fd)) != '\0') {
-        printf("%c", c);
-    }
+    printf("[%d] ", i);
+    read_stream_until_null(fd);
+    print_sh_type_entry(h.sh_type);
+
     printf("\n");
+
+
+    fclose(fd);
 }

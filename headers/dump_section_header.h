@@ -6,6 +6,8 @@
 #include "../headers/misc.h"
 #include "../headers/dump_elf_header.h"
 
+#define SH_NAME_ALIGN_STRING "%25s"
+#define SH_TYPE_ALIGN_STRING "%20s"
 
 #define VARIABLE_32BIT_SIZE 4
 #define VARIABLE_64BIT_SIZE 8
@@ -31,5 +33,6 @@ void DEBUG_DUMP_NBYTES(int offset, int n, Args args);
 Section_header *grab_all_section_headers(Elf_header header, Args args);
 void dump_section_headers(Section_header *headers, Elf_header elf_header, Args args);
 void print_and_format_section_header(Section_header shname, Section_header h, Elf_header elf_header, int i, Args args);
+void read_stream_until_null(FILE *fd);
 
 #endif

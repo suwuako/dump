@@ -141,5 +141,6 @@ Elf_header grab_elf_header(Args args) {
     ret.e_shnum = read_nbytes(fd, &ret, 2, false);
     ret.e_shstrndx = read_nbytes(fd, &ret, 2, false);
 
+    fclose(fd);
     return ret;
 }

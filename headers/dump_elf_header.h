@@ -9,8 +9,8 @@
 
 #define THIRTY_TWO_BIT 1
 #define SIXTY_FOUR_BIT 2
-#define LITTLE_ENDIAN 1
-#define BIG_ENDIAN 2
+#define LITTLE_ENDIAN_CUSTOM 1
+#define BIG_ENDIAN_CUSTOM 2
 #define PADDING_SIZE 7
 
 extern const char *osabi_names[19];
