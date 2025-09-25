@@ -7,7 +7,7 @@
 #include "../headers/dump_elf_header.h"
 
 #define SH_NAME_ALIGN_STRING "%20s"
-#define SH_TYPE_ALIGN_STRING "%18s"
+#define SH_TYPE_ALIGN_STRING "%16s"
 #define SH_FLAGS_ALIGN_STRING "%3s"
 
 #define VARIABLE_32BIT_SIZE 4
