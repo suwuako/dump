@@ -12,11 +12,10 @@ int main(int argc, char *argv[]) {
     print_args(args);
 
     Elf_header elf_header = grab_elf_header(args);
-    if (args.dump_header) { dump_header(elf_header); }
+    if (args.dump_header) dump_header(elf_header);
 
-    Section_header sect_header = grab_sect_header(elf_header, args);
-
-    DEBUG_DUMP_NBYTES(elf_header.e_shoff + elf_header.e_shentsize, 100, args);
+    Section_header *section_headers = grab_all_section_headers(elf_header, args);
+    if (args.dump_section_header) dump_section_headers(section_headers, elf_header);
 
     return 0;
 }

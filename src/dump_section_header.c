@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 #include "../headers/dump_elf_header.h"
@@ -30,7 +31,7 @@ uint64_t read_nbytes_better(Elf_header header, FILE *fd, int bytes, bool variabl
 }
 
 void navigate_fd_to_section_index(Elf_header header, FILE *fd, int index) {
-
+    lseek(fileno(fd), index * header.e_shentsize, SEEK_CUR);
 }
 
 // debug function to dump nbytes from a file offset.
@@ -60,16 +61,41 @@ void navigate_fd_to_section_header(Elf_header header, FILE *fd) {
     lseek(fileno(fd), entry_point + entry_size, SEEK_SET);
 }
 
-Section_header grab_sect_header(Elf_header header, Args args) {
+Section_header grab_sect_header(Elf_header header, Args args, int index) {
     Section_header ret = {};
     FILE *fd = fopen(args.path.filepath, "r");
     navigate_fd_to_section_header(header, fd);
+    navigate_fd_to_section_index(header, fd, index);
 
     ret.sh_name = read_nbytes_better(header, fd, 4, false);
     ret.sh_type = read_nbytes_better(header, fd, 4, false);
-
-    printf("name: %ld, type: %ld\n", ret.sh_name, ret.sh_type);
-
+    ret.sh_flags = read_nbytes_better(header, fd, 0, true);
+    ret.sh_addr = read_nbytes_better(header, fd, 0, true);
+    ret.sh_offset = read_nbytes_better(header, fd, 0, true);
+    ret.sh_size = read_nbytes_better(header, fd, 0, true);
+    ret.sh_link = read_nbytes_better(header, fd, 4, false);
+    ret.sh_info = read_nbytes_better(header, fd, 4, false);
+    ret.sh_addralign = read_nbytes_better(header, fd, 0, true);
+    ret.sh_entsize = read_nbytes_better(header, fd, 0, true);
 
     return ret;
+}
+
+Section_header *grab_all_section_headers(Elf_header header, Args args) {
+    Section_header *all_headers = malloc(sizeof(Section_header) * header.e_shnum);
+
+    for (int i = 0; i < header.e_shnum; i++) {
+        Section_header section = grab_sect_header(header, args, i);
+        all_headers[i] = section;
+    }
+}
+
+void dump_section_headers(Section_header *headers, Elf_header elf_header) {
+    for (int i = 0; i < elf_header.e_shnum; i++) {
+        print_and_format_section_header(headers[elf_header.e_shstrndx], headers[i], elf_header, i);
+    }
+}
+
+void print_and_format_section_header(Section_header shname, Section_header h, Elf_header elf_header, int i) {
+    // read string until null term
 }
