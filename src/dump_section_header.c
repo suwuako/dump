@@ -93,7 +93,8 @@ void dump_section_headers(Section_header *headers, Elf_header elf_header, Args a
     printf("elf header count: %ld\nshstrntab index: %ld\n\n", elf_header.e_shnum, elf_header.e_shstrndx);
 
     printf("%s"SH_NAME_ALIGN_STRING SH_TYPE_ALIGN_STRING "    " SH_FLAGS_ALIGN_STRING, "Index", "name", "type", "flags");
-    printf("         "SH_FLAGS_ALIGN_STRING "       " SH_FLAGS_ALIGN_STRING "         " SH_FLAGS_ALIGN_STRING"\n", "addr", "offset", "size");
+    printf("         "SH_FLAGS_ALIGN_STRING "       " SH_FLAGS_ALIGN_STRING "         " SH_FLAGS_ALIGN_STRING"", "addr", "offset", "size");
+    printf("     "SH_FLAGS_ALIGN_STRING "     " SH_FLAGS_ALIGN_STRING "        "SH_FLAGS_ALIGN_STRING "      " SH_FLAGS_ALIGN_STRING"\n", "link", "info", "align", "entsize");
     for (int i = 0; i < elf_header.e_shnum; i++) {
         print_and_format_section_header(headers[elf_header.e_shstrndx], headers[i], elf_header, i, args);
     }
@@ -150,6 +151,10 @@ void print_and_format_section_header(Section_header shname, Section_header h, El
     printf(SH_FLAGS_ALIGN_STRING "0x%08lx", "", h.sh_addr);
     printf(SH_FLAGS_ALIGN_STRING "0x%08lx", "", h.sh_offset);
     printf(SH_FLAGS_ALIGN_STRING "0x%08lx", "", h.sh_size);
+    printf(SH_FLAGS_ALIGN_STRING "0x%04lx", "", h.sh_link);
+    printf(SH_FLAGS_ALIGN_STRING "0x%04lx", "", h.sh_info);
+    printf(SH_FLAGS_ALIGN_STRING "0x%08lx", "", h.sh_addralign);
+    printf(SH_FLAGS_ALIGN_STRING "0x%08lx", "", h.sh_entsize);
 
     printf("\n");
 
