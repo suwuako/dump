@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cd "${MESON_BUILD_ROOT}"
-./dump
+./dump -h -s dump
