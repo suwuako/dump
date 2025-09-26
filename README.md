@@ -33,7 +33,8 @@ Optionally, you can run dump after ninja successfully compiles the project:
 Usage: dump [OPTION]... FILE
 Dumps compiled binaries headers, symbols, etc.
 
-    -h, --dump-header           dump ELF headers
+    -h, --dump-header           dump ELF headers to stdout
+    -s, --dump-section-header   dump section headers to stdout
 
 Examples:
     dump -h a.out       dumps the ELF headers from a.out
