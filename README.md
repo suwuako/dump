@@ -24,6 +24,10 @@ Test if the binary functions by dumping the contents of itself.
 
 `/dump/build/ $: ./dump -h dump`
 
+Optionally, you can run dump after ninja successfully compiles the project:
+
+`$ meson compile -C build run`
+
 ## Usage
 ```
 Usage: dump [OPTION]... FILE

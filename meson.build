@@ -1,5 +1,11 @@
 project('dump', 'c')
-executable('dump', 'src/main.c')
+
+deps = [
+    'src/misc.c', 'src/parse_args.c',
+    'src/dump_elf_header.c', 'src/dump_section_header.c'
+    ]
+
+executable('dump', 'src/main.c', deps)
 
 
 run_target('run',
