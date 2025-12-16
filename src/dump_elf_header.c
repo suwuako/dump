@@ -35,6 +35,7 @@ uint64_t read_varaible_entries(FILE *fd, Elf_header header) {
 
 // IM SO UGLY 😭 sigh... 💔
 // is goto aura?
+// depreciated by read_nbytes_better lmao
 uint64_t read_nbytes(FILE *fd, Elf_header *header, int byte_count, bool variable) {
     uint64_t ret = 0;
 

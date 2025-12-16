@@ -19,8 +19,15 @@ int main(int argc, char *argv[]) {
     Section_header *section_headers = grab_all_section_headers(elf_header, args);
     if (args.dump_section_header) dump_section_headers(section_headers, elf_header, args);
 
-    if (program_header_exists(elf_header)) printf("meow");
+    bool proghead_exists = program_header_exists(elf_header);
+    Program_header *program_headers = NULL;
 
+    if (!proghead_exists && args.dump_program_header) fatal_error("-p doesn't work with object files without program headers!");
+    if (proghead_exists) {
+        program_headers = grab_program_headers(elf_header, args);
+    }
+
+    if (program_headers != NULL) free(program_headers);
     free(section_headers);
 
     return 0;
