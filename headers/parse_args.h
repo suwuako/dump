@@ -8,6 +8,8 @@
 #define DUMP_HEADER_ARG_LONG "--dump-header"
 #define DUMP_SECTION_HEADER_ARG "-s"
 #define DUMP_SECTION_HEADER_ARG_LONG "--dump-section-header"
+#define DUMP_PROGRAM_HEADER_ARG "-p"
+#define DUMP_PROGRAM_HEADER_ARG_LONG "--dump-program-header"
 
 typedef struct filepath {
     char *filepath;
@@ -20,6 +22,7 @@ typedef struct args {
     Filepath path;
     bool dump_header;
     bool dump_section_header;
+    bool dump_program_header;
 } Args;
 
 
