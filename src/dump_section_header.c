@@ -6,6 +6,8 @@
 #include "../headers/dump_section_header.h"
 #include "../headers/misc.h"
 
+// bytes indicates how many bytes to read. 0 if is a variable value (32/64 bits)
+// factors in little/big endian.
 uint64_t read_nbytes_better(Elf_header header, FILE *fd, int bytes, bool variable) {
     uint64_t ret = 0;
     if (variable) {
