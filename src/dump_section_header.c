@@ -6,50 +6,8 @@
 #include "../headers/dump_section_header.h"
 #include "../headers/misc.h"
 
-// bytes indicates how many bytes to read. 0 if is a variable value (32/64 bits)
-// factors in little/big endian.
-uint64_t read_nbytes_better(Elf_header header, FILE *fd, int bytes, bool variable) {
-    uint64_t ret = 0;
-    if (variable) {
-        if (header.ei_class == THIRTY_TWO_BIT) {
-            // if 32 bit
-            bytes = VARIABLE_32BIT_SIZE;
-        } else {
-            bytes = VARIABLE_64BIT_SIZE;
-        }
-    }
-
-    if (header.ei_data == LITTLE_ENDIAN_CUSTOM) {
-        for (int i = 0; i < bytes; i++) {
-            ret |= (fgetc(fd) << (8 * i));
-        }
-    } else if (header.ei_data == BIG_ENDIAN_CUSTOM) {
-        for (int i = 0; i < bytes; i++) {
-            ret |= fgetc(fd); ret >>= 8;
-        }
-    }
-
-    return ret;
-}
-
 void navigate_fd_to_section_index(Elf_header header, FILE *fd, int index) {
     lseek(fileno(fd), index * header.e_shentsize, SEEK_CUR);
-}
-
-// debug function to dump nbytes from a file offset.
-void DEBUG_DUMP_NBYTES(int offset, int n, Args args) {
-    FILE *fd = fopen(args.path.filepath, "r");
-
-    lseek(fileno(fd), offset, SEEK_SET);
-    for (int i = 0 ; i < n; i++) {
-        if (i % 16 == 0) {
-            printf("\n");
-        } if (i % 2 == 0) {
-            printf(" ");
-        }
-        printf("%02x", fgetc(fd));
-    }
-    fclose(fd);
 }
 
 void navigate_fd_to_section_header(Elf_header header, FILE *fd) {
@@ -130,17 +88,6 @@ void print_sh_type_entry(uint64_t value) {
 
     printf(SH_TYPE_ALIGN_STRING, result);
 }
-
-void read_stream_until_null(FILE *fd) {
-    char result[100];
-    int i = 0;
-
-    // read string until null term
-    while ((result[i] = fgetc(fd)) != '\0') i++;
-
-    printf(SH_NAME_ALIGN_STRING, result);
-}
-
 
 void print_and_format_section_header(Section_header shname, Section_header h, Elf_header elf_header, int i, Args args) {
     int addr = shname.sh_offset + h.sh_name;
