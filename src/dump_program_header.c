@@ -54,3 +54,72 @@ Program_header grab_program_header(Elf_header header, Args args, int index) {
 
     return ret;
 }
+
+const char* get_p_type_name(uint32_t p_type) {
+    switch (p_type) {
+        case PT_NULL:    return "NULL (Unused)";
+        case PT_LOAD:    return "LOAD (Loadable segment)";
+        case PT_DYNAMIC: return "DYNAMIC (Dynamic linking info)";
+        case PT_INTERP:  return "INTERP (Interpreter info)";
+        case PT_NOTE:    return "NOTE (Auxiliary info)";
+        case PT_SHLIB:   return "SHLIB (Reserved)";
+        case PT_PHDR:    return "PHDR (Program header table)";
+        case PT_TLS:     return "TLS (Thread-Local Storage)";
+        
+        /* Range handling for OS and Processor specific types */
+        default:
+            if (p_type >= PT_LOOS && p_type <= PT_HIOS) {
+                return "OS Specific";
+            } else if (p_type >= PT_LOPROC && p_type <= PT_HIPROC) {
+                return "Processor Specific";
+            } else {
+                return "UNKNOWN";
+            }
+    }
+}
+
+char* get_p_flags_name(uint64_t p_flags) {
+    char *ret = malloc(sizeof(char) * 4);
+    if ((p_flags & 0x4)) {
+        ret[0] = 'r';
+    } else {
+        ret[0] = '-';
+    }
+
+    if ((p_flags & 0x2)) {
+        ret[1] = 'w';
+    } else {
+        ret[1] = '-';
+    }
+
+    if ((p_flags & 0x1)) {
+        ret[2] = 'x';
+    } else {
+        ret[2] = '-';
+    }
+    ret[3] = '\0';
+    return ret;
+}
+
+void print_program_header(Program_header ph) {
+    printf("%s\n", get_p_type_name(ph.p_type));
+    printf("File Offset:    0x%16lx\n", ph.p_offset);
+    printf("Virtual Addr:   0x%16lx\n", ph.p_vaddr);
+    printf("Physical Addr:  0x%16lx\n", ph.p_paddr);
+    printf("File size:      0x%16lx\n", ph.p_filesz);
+    printf("Memory size:    0x%16lx\n", ph.p_memsz);
+    char *flags = get_p_flags_name(ph.p_flags);
+    printf("Flags:          %s\n", flags);
+    free(flags);
+    printf("Alignment:      %ld\n", ph.p_align);
+    printf("------------------------------------\n");
+}
+
+void dump_program_headers(Program_header *ph, Elf_header eh, Args args) {
+    printf("\n== program header dump ==\n\n");
+    printf("Index Type Flags Offset Vaddr Paddr Filesz Memsz Align\n");
+
+    for (int i = 0; i < eh.e_phnum; i++) {
+        print_program_header(ph[i]);
+    }
+}

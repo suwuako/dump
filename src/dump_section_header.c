@@ -92,7 +92,8 @@ Section_header *grab_all_section_headers(Elf_header header, Args args) {
 
 void dump_section_headers(Section_header *headers, Elf_header elf_header, Args args) {
     printf("\n== section header dump ==\n\n");
-    printf("elf header count: %ld\nshstrntab index: %ld\n\n", elf_header.e_shnum, elf_header.e_shstrndx);
+    printf("elf header count: %ld\n"
+            "shstrntab index: %ld\n\n", elf_header.e_shnum, elf_header.e_shstrndx);
 
     printf("%s"SH_NAME_ALIGN_STRING SH_TYPE_ALIGN_STRING "    " SH_FLAGS_ALIGN_STRING, "Index", "name", "type", "flags");
     printf("         "SH_FLAGS_ALIGN_STRING "       " SH_FLAGS_ALIGN_STRING "         " SH_FLAGS_ALIGN_STRING"", "addr", "offset", "size");
