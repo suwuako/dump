@@ -35,6 +35,7 @@ Dumps compiled binaries headers, symbols, etc.
 
     -h, --dump-header           dump ELF headers to stdout
     -s, --dump-section-header   dump section headers to stdout
+    -p, --dump-program-header   dump program headers to stdout
 
 Examples:
     dump -h a.out       dumps the ELF headers from a.out
