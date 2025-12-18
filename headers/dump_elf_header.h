@@ -6,7 +6,6 @@
 #include <stdbool.h>
 
 #include "parse_args.h"
-
 #define THIRTY_TWO_BIT 1
 #define SIXTY_FOUR_BIT 2
 #define LITTLE_ENDIAN_CUSTOM 1
@@ -53,6 +52,5 @@ void dump_header(Elf_header header);
 Elf_header grab_elf_header(Args args);
 void check_and_set_magic(FILE *fd, Elf_header *header);
 uint64_t read_varaible_entries(FILE *fd, Elf_header header);
-uint64_t read_nbytes(FILE *fd, Elf_header *header, int byte_count, bool variable);
 
 #endif
